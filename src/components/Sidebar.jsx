@@ -25,7 +25,7 @@ export default function Sidebar({ active, setActive }) {
           <span style={{ fontSize: 18 }}>💬</span>
         </div>
         <div>
-          <div style={{ fontFamily: 'Syne', fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>PulseChat</div>
+          <div style={{ fontFamily: 'Syne', fontSize: 15, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em' }}>N8N.Meander.One </div>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>AI Agent Platform</div>
         </div>
       </div>

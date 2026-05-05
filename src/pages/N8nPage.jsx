@@ -32,7 +32,7 @@ export default function N8nPage() {
                   <div style={{ fontSize: 13, fontWeight: 500, marginTop: 2 }}>{v}</div>
                 </div>
               ))}
-            </div>
+            </div>  
           </div>
         ))}
       </div>

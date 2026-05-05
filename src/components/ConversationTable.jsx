@@ -23,7 +23,7 @@ export default function ConversationTable({ data, onRowClick, search = '' }) {
   const searched = data.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase()) ||
     c.msg.toLowerCase().includes(search.toLowerCase()) ||
-    c.phone.includes(search) ||
+    String(c.phone).includes(search) ||
     c.topic.toLowerCase().includes(search.toLowerCase())
   );
 

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp AI Agent — Automate Customer Support</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap');
+
+:root {
+  --black:    #080808;
+  --white:    #ffffff;
+  --off:      #f9f9f7;
+  --off2:     #f2f2ef;
+  --border:   #e4e4e0;
+  --border2:  #d0d0ca;
+  --text:     #1a1a18;
+  --text2:    #5c5c58;
+  --text3:    #9a9a94;
+  --green:    #22c55e;
+  --green-d:  #16a34a;
+  --radius:   10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--white);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 62px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 52px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-left { display: flex; align-items: center; gap: 40px; }
+
+.nav-wordmark {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--black);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--text2);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.nav-right { display: flex; align-items: center; gap: 10px; }
+
+.btn-ghost {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 7px 18px;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-ghost:hover { border-color: var(--text2); color: var(--text); background: var(--off); }
+
+.btn-dark {
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 8px 20px;
+  background: var(--black);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-dark:hover { background: #1a1a18; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.15); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 130px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% -5%, rgba(34,197,94,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 15% 80%, rgba(34,197,94,0.04) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 35% at 90% 70%, rgba(0,0,0,0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Grid lines bg */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 75%);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 28px;
+  animation: fade-up 0.5s ease both;
+}
+
+.hero-eyebrow span {
+  width: 20px; height: 1px;
+  background: var(--border2);
+  display: inline-block;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(44px, 6.5vw, 78px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--black);
+  max-width: 800px;
+  margin: 0 auto 24px;
+  animation: fade-up 0.5s ease 0.08s both;
+}
+
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--green-d);
+}
+
+.hero-sub {
+  font-size: 16.5px;
+  font-weight: 300;
+  color: var(--text2);
+  line-height: 1.75;
+  max-width: 460px;
+  margin: 0 auto 44px;
+  animation: fade-up 0.5s ease 0.16s both;
+}
+
+.hero-ctas {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center;
+  animation: fade-up 0.5s ease 0.24s both;
+}
+
+.btn-primary {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 13px 30px;
+  background: var(--black);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+}
+.btn-primary:hover { background: #1a1a18; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,0,0,0.15); }
+
+.btn-outline {
+  font-size: 14px;
+  font-weight: 400;
+  font-family: inherit;
+  padding: 13px 26px;
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--border2); color: var(--text); background: var(--off); }
+
+/* ── MOCKUP ── */
+.mockup-wrap {
+  margin-top: 68px;
+  width: 100%; max-width: 940px;
+  position: relative;
+  animation: fade-up 0.7s ease 0.32s both;
+}
+
+.mockup-wrap::before {
+  content: '';
+  position: absolute;
+  bottom: -30px; left: 5%; right: 5%;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.12) 0%, transparent 70%);
+  filter: blur(8px);
+}
+
+.mockup {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 2px 0 var(--border), 0 20px 60px rgba(0,0,0,0.08), 0 40px 80px rgba(0,0,0,0.05);
+  overflow: hidden;
+  position: relative;
+}
+
+.mockup-bar {
+  background: var(--off);
+  border-bottom: 1px solid var(--border);
+  padding: 11px 16px;
+  display: flex; align-items: center; gap: 7px;
+}
+.m-dot { width: 10px; height: 10px; border-radius: 50%; }
+.m-url {
+  flex: 1; margin: 0 14px;
+  background: white; border: 1px solid var(--border);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: 11.5px; color: var(--text3); text-align: center;
+  font-family: 'Manrope', sans-serif;
+}
+
+.mockup-body { display: grid; grid-template-columns: 196px 1fr; height: 360px; }
+
+.m-sidebar {
+  background: #080808;
+  padding: 18px 12px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.m-brand {
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 8px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 10px;
+}
+.m-brand-icon { width: 24px; height: 24px; background: var(--green); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.m-brand-name { font-family: 'Playfair Display', serif; font-size: 13px; color: white; }
+
+.m-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 8px; border-radius: 5px;
+  font-size: 11px; color: rgba(255,255,255,0.38);
+  font-family: 'Manrope', sans-serif;
+}
+.m-item.on { background: rgba(34,197,94,0.1); color: var(--green); }
+.m-item-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: 0.7; }
+
+.m-main { padding: 16px; display: flex; flex-direction: column; gap: 12px; background: var(--off); }
+
+.m-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.m-stat {
+  background: white; border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px;
+}
+.m-stat-l { font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; font-family: 'Manrope', sans-serif; }
+.m-stat-v { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--black); }
+
+.m-table { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; flex: 1; }
+.m-thead { display: grid; grid-template-columns: 1.4fr 2fr 1fr 0.7fr; padding: 7px 12px; background: var(--off); border-bottom: 1px solid var(--border); }
+.m-th { font-size: 8.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 600; font-family: 'Manrope', sans-serif; }
+.m-row { display: grid; grid-template-columns: 1.4fr 2fr 1fr 0.7fr; padding: 8px 12px; border-bottom: 1px solid var(--border); align-items: center; }
+.m-row:last-child { border-bottom: none; }
+.m-user { display: flex; align-items: center; gap: 6px; }
+.m-av { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 600; font-family: 'Manrope', sans-serif; }
+.m-name { font-size: 10.5px; font-weight: 500; color: var(--text); font-family: 'Manrope', sans-serif; }
+.m-msg { font-size: 10px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: 'Manrope', sans-serif; }
+.m-pill { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px; font-family: 'Manrope', sans-serif; }
+.m-time { font-size: 9.5px; color: var(--text3); font-family: 'Manrope', sans-serif; }
+
+/* ── TRUSTED BAR ── */
+.trust-bar {
+  background: var(--off);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 52px;
+  display: flex; align-items: center; gap: 40px;
+}
+.trust-label { font-size: 11.5px; color: var(--text3); font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
+.trust-divider { width: 1px; height: 20px; background: var(--border2); }
+.trust-items { display: flex; align-items: center; gap: 36px; flex: 1; }
+.trust-item { font-size: 13px; font-weight: 500; color: var(--text3); display: flex; align-items: center; gap: 7px; }
+.trust-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+
+/* ── FEATURES ── */
+#features { padding: 110px 52px; background: white; }
+
+.section-head { max-width: 1100px; margin: 0 auto 60px; }
+.section-kicker {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text3);
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-kicker::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--border2);
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(30px, 3.5vw, 46px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--black);
+  margin-bottom: 14px;
+}
+.section-sub { font-size: 15.5px; font-weight: 300; color: var(--text2); line-height: 1.75; max-width: 460px; }
+
+.features-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.feat-card {
+  background: white;
+  padding: 36px 32px;
+  transition: background 0.2s;
+  cursor: default;
+}
+.feat-card:hover { background: var(--off); }
+
+.feat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text3);
+  margin-bottom: 18px;
+  font-style: italic;
+}
+
+.feat-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--black);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.feat-desc { font-size: 13.5px; font-weight: 300; color: var(--text2); line-height: 1.75; }
+
+/* ── HOW IT WORKS ── */
+#how { padding: 110px 52px; background: var(--off); }
+
+.how-inner { max-width: 1100px; margin: 0 auto; }
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 0;
+  margin: 60px 0;
+  position: relative;
+}
+
+.steps::before {
+  content: '';
+  position: absolute;
+  top: 20px; left: 12%; right: 12%;
+  height: 1px;
+  background: var(--border2);
+}
+
+.step { text-align: center; position: relative; padding: 0 12px; }
+
+.step-circle {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  margin: 0 auto 16px;
+  position: relative; z-index: 2;
+  transition: all 0.2s;
+}
+
+.step:hover .step-circle {
+  background: var(--black);
+  color: white;
+  border-color: var(--black);
+}
+
+.step-name { font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.step-note { font-size: 11px; font-weight: 300; color: var(--text3); line-height: 1.5; }
+
+.step-arrow { display: flex; align-items: flex-start; justify-content: center; padding-top: 12px; color: var(--border2); font-size: 18px; }
+
+.how-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.how-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.how-card:hover { border-color: var(--border2); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+
+.how-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 500;
+  color: var(--black); margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+.how-card-desc { font-size: 13.5px; font-weight: 300; color: var(--text2); line-height: 1.75; }
+
+.code-box {
+  background: var(--black);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-top: 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+.c-comment { color: #4a4a46; }
+.c-key     { color: #86efac; }
+.c-val     { color: #d1d5db; }
+.c-accent  { color: var(--green); }
+
+/* ── CONTACT ── */
+#contact { padding: 110px 52px; background: white; }
+
+.contact-inner { max-width: 640px; margin: 0 auto; }
+.contact-head { text-align: center; margin-bottom: 48px; }
+
+.contact-form {
+  background: var(--off);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px;
+}
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text); letter-spacing: 0.02em; }
+
+.form-input, .form-textarea {
+  font-family: 'Manrope', inherit;
+  font-size: 13.5px;
+  font-weight: 300;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+  color: var(--text);
+  outline: none;
+  transition: all 0.2s;
+  width: 100%;
+}
+.form-input:focus, .form-textarea:focus {
+  border-color: var(--black);
+  box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+}
+.form-input::placeholder, .form-textarea::placeholder { color: var(--text3); }
+.form-textarea { resize: vertical; min-height: 100px; }
+
+.form-btn {
+  width: 100%;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px;
+  background: var(--black);
+  color: white;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 6px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  letter-spacing: 0.01em;
+}
+.form-btn:hover { background: #1a1a18; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.14); }
+.form-note { font-size: 12px; color: var(--text3); text-align: center; margin-top: 14px; font-weight: 300; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  padding: 40px 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-left {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: white;
+  letter-spacing: -0.01em;
+}
+.footer-sub { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 4px; font-family: 'Manrope', sans-serif; font-weight: 300; }
+
+.footer-links { display: flex; gap: 28px; }
+.footer-links a { font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none; transition: color 0.2s; font-weight: 300; }
+.footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--black); color: white;
+  padding: 12px 24px; border-radius: 30px;
+  font-size: 13.5px; font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 9999;
+  font-family: 'Manrope', sans-serif;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* Stagger */
+.stagger > *:nth-child(1) { transition-delay: 0.04s; }
+.stagger > *:nth-child(2) { transition-delay: 0.10s; }
+.stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.stagger > *:nth-child(4) { transition-delay: 0.22s; }
+.stagger > *:nth-child(5) { transition-delay: 0.28s; }
+.stagger > *:nth-child(6) { transition-delay: 0.34s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="#" class="nav-wordmark">N8N.Meander.One</a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <a href="/login" class="btn-ghost">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zm-5 6a5 5 0 0110 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Admin login
+    </a>
+    <a href="#contact" class="btn-dark">
+      Request a demo
+      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow"><span></span>WhatsApp Automation Platform<span></span></div>
+
+    <h1>Your customers get answers.<br><em>Instantly, automatically.</em></h1>
+
+    <p class="hero-sub">An AI agent that connects to your WhatsApp number, replies to every customer in seconds, and gives you a clean dashboard to track everything.</p>
+
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary">
+        Request a demo
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#how" class="btn-outline">See how it works</a>
+    </div>
+
+    <!-- Mockup -->
+    <div class="mockup-wrap">
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="m-dot" style="background:#ff5f57"></div>
+          <div class="m-dot" style="background:#febc2e"></div>
+          <div class="m-dot" style="background:#28c840"></div>
+          <div class="m-url">app.yourdomain.com/dashboard</div>
+        </div>
+        <div class="mockup-body">
+          <div class="m-sidebar">
+            <div class="m-brand">
+              <div class="m-brand-icon">💬</div>
+              <span class="m-brand-name">Dashboard</span>
+            </div>
+            <div class="m-item on"><div class="m-item-dot"></div>Overview</div>
+            <div class="m-item"><div class="m-item-dot"></div>Conversations</div>
+            <div class="m-item"><div class="m-item-dot"></div>Analytics</div>
+            <div class="m-item"><div class="m-item-dot"></div>Users</div>
+            <div class="m-item"><div class="m-item-dot"></div>AI Config</div>
+            <div class="m-item"><div class="m-item-dot"></div>Logs</div>
+            <div class="m-item"><div class="m-item-dot"></div>Failed</div>
+          </div>
+          <div class="m-main">
+            <div class="m-stats">
+              <div class="m-stat"><div class="m-stat-l">Messages</div><div class="m-stat-v">1,248</div></div>
+              <div class="m-stat"><div class="m-stat-l">Success rate</div><div class="m-stat-v">96.2%</div></div>
+              <div class="m-stat"><div class="m-stat-l">Unique users</div><div class="m-stat-v">87</div></div>
+              <div class="m-stat"><div class="m-stat-l">Avg response</div><div class="m-stat-v">1.4s</div></div>
+            </div>
+            <div class="m-table">
+              <div class="m-thead">
+                <div class="m-th">User</div>
+                <div class="m-th">Message</div>
+                <div class="m-th">Status</div>
+                <div class="m-th">Time</div>
+              </div>
+              <div class="m-row">
+                <div class="m-user"><div class="m-av" style="background:#dbeafe;color:#1e40af">RK</div><span class="m-name">Rahul K.</span></div>
+                <div class="m-msg">What are your business hours?</div>
+                <span class="m-pill" style="background:rgba(34,197,94,0.1);color:#16a34a">● Replied</span>
+                <div class="m-time">2m ago</div>
+              </div>
+              <div class="m-row">
+                <div class="m-user"><div class="m-av" style="background:#fce7f3;color:#9d174d">PS</div><span class="m-name">Priya S.</span></div>
+                <div class="m-msg">How do I track my order?</div>
+                <span class="m-pill" style="background:rgba(34,197,94,0.1);color:#16a34a">● Replied</span>
+                <div class="m-time">8m ago</div>
+              </div>
+              <div class="m-row">
+                <div class="m-user"><div class="m-av" style="background:#fef3c7;color:#92400e">AM</div><span class="m-name">Amit M.</span></div>
+                <div class="m-msg">I need to speak to a human</div>
+                <span class="m-pill" style="background:rgba(245,158,11,0.1);color:#b45309">● Pending</span>
+                <div class="m-time">15m ago</div>
+              </div>
+              <div class="m-row">
+                <div class="m-user"><div class="m-av" style="background:#ede9fe;color:#5b21b6">VT</div><span class="m-name">Vikram T.</span></div>
+                <div class="m-msg">My payment failed twice</div>
+                <span class="m-pill" style="background:rgba(239,68,68,0.1);color:#dc2626">● Failed</span>
+                <div class="m-time">1h ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-head reveal">
+    <div class="section-kicker">Features</div>
+    <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+    <p class="section-sub">Built on a lean, reliable automation stack — no bloated SaaS pricing, no per-message fees.</p>
+  </div>
+
+  <div class="features-grid reveal stagger">
+    <div class="feat-card">
+      <div class="feat-num">01</div>
+      <div class="feat-title">Instant AI Replies</div>
+      <p class="feat-desc">Groq-powered LLM responds to every customer message in under 2 seconds — around the clock, with no human intervention needed.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">02</div>
+      <div class="feat-title">Real-time Dashboard</div>
+      <p class="feat-desc">Every conversation, response status, and performance metric in one clean admin panel — always live, always accurate.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">03</div>
+      <div class="feat-title">Google Sheets Logging</div>
+      <p class="feat-desc">Every message and AI reply is automatically saved to your Google Sheet — searchable, exportable, and yours to keep.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">04</div>
+      <div class="feat-title">n8n Automation</div>
+      <p class="feat-desc">Fully customisable workflow logic for routing, escalation, and alerts — change behaviour without touching a line of code.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">05</div>
+      <div class="feat-title">Failure Alerts</div>
+      <p class="feat-desc">Instant notifications when a message fails to deliver — so no customer query ever slips through unnoticed.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-num">06</div>
+      <div class="feat-title">Search & Analytics</div>
+      <p class="feat-desc">Search conversations by name, topic, or phone number. Visualise trends, response times, and topic breakdowns.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-inner">
+    <div class="section-head reveal">
+      <div class="section-kicker">How it works</div>
+      <h2 class="section-title">From message to logged reply<br>in under two seconds.</h2>
+    </div>
+
+    <div class="steps reveal">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-name">Customer messages</div>
+        <div class="step-note">on WhatsApp</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-name">Twilio receives</div>
+        <div class="step-note">triggers n8n workflow</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-name">Groq AI generates</div>
+        <div class="step-note">a contextual reply</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-name">Reply delivered</div>
+        <div class="step-note">back to WhatsApp</div>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-name">Data logged</div>
+        <div class="step-note">Sheets + Dashboard</div>
+      </div>
+    </div>
+
+    <div class="how-cards reveal">
+      <div class="how-card">
+        <div class="how-card-title">Fully customisable AI behaviour</div>
+        <p class="how-card-desc">Define exactly how the AI responds — formal or friendly, brief or detailed. Update the system prompt from the dashboard in seconds, no redeployment needed.</p>
+        <div class="code-box">
+          <span class="c-comment">// System prompt — edit from dashboard</span><br>
+          <span class="c-key">"role"</span><span class="c-val">: </span><span class="c-key">"system"</span><span class="c-val">,</span><br>
+          <span class="c-key">"content"</span><span class="c-val">: </span><span class="c-accent">"You are a professional support<br>&nbsp;&nbsp;agent. Be concise, helpful,<br>&nbsp;&nbsp;and never promise timelines."</span>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="how-card-title">Your data, in your Google Sheet</div>
+        <p class="how-card-desc">No proprietary database. Every conversation lives in a Google Sheet you own — share it with your team, filter it, or export it whenever you need.</p>
+        <div class="code-box">
+          <span class="c-comment"># Auto-logged columns</span><br>
+          <span class="c-val">id &nbsp;&nbsp;&nbsp;&nbsp; → </span><span class="c-accent">auto-increment</span><br>
+          <span class="c-val">name &nbsp;&nbsp; → </span><span class="c-accent">customer name</span><br>
+          <span class="c-val">message → </span><span class="c-accent">what they asked</span><br>
+          <span class="c-val">reply &nbsp; → </span><span class="c-accent">AI response sent</span><br>
+          <span class="c-val">status  → </span><span class="c-accent">sent / failed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-head reveal">
+      <div class="section-kicker" style="justify-content:center">Contact</div>
+      <h2 class="section-title" style="text-align:center">Ready to automate<br>your WhatsApp support?</h2>
+      <p class="section-sub" style="text-align:center;margin:0 auto;max-width:380px">Fill in your details and we will get back to you within 24 hours with a live walkthrough.</p>
+    </div>
+
+    <div class="contact-form reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full name</label>
+          <input id="f-name" type="text" class="form-input" placeholder="Rahul Kumar" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Business name</label>
+          <input id="f-biz" type="text" class="form-input" placeholder="Acme Pvt. Ltd." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Work email</label>
+        <input id="f-email" type="email" class="form-input" placeholder="you@company.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">WhatsApp number</label>
+        <input id="f-phone" type="text" class="form-input" placeholder="+91 98765 43210" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell us about your use case</label>
+        <textarea id="f-msg" class="form-textarea" placeholder="We handle around 200 customer queries per day on WhatsApp..."></textarea>
+      </div>
+      <button class="form-btn" onclick="submitForm()">
+        Send request
+        <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="form-note">No spam. We respond within 24 hours.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    AI Support Agent
+    <div class="footer-sub">© 2026 All rights reserved.</div>
+  </div>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#contact">Contact</a>
+    <a href="/login">Admin login</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✅ &nbsp;Request received — we'll be in touch soon!</div>
+
+<script>
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Form submit
+  async function submitForm() {
+    const name  = document.getElementById('f-name').value.trim();
+    const biz   = document.getElementById('f-biz').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const msg   = document.getElementById('f-msg').value.trim();
+
+    if (!name || !email) { alert('Please enter your name and email.'); return; }
+
+    const btn = document.querySelector('.form-btn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    try {
+      await fetch('YOUR_N8N_WEBHOOK_URL/demo-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, business: biz, email, phone, message: msg, submitted_at: new Date().toISOString() })
+      });
+    } catch(e) { /* webhook not yet connected */ }
+
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+    ['f-name','f-biz','f-email','f-phone','f-msg'].forEach(id => document.getElementById(id).value = '');
+    btn.innerHTML = 'Send request <svg width="13" height="13" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M6 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    btn.disabled = false;
+  }
+
+  // Active nav
+  document.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    document.querySelectorAll('section[id]').forEach(s => {
+      const top = s.offsetTop - 80;
+      const bot = top + s.offsetHeight;
+      if (scrollY >= top && scrollY < bot) {
+        document.querySelectorAll('.nav-links a').forEach(a => {
+          a.style.color = a.getAttribute('href') === '#' + s.id ? 'var(--text)' : '';
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>

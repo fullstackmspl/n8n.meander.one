@@ -1,6 +1,6 @@
 export default function N8nPage() {
   const workflows = [
-    { name: 'WhatsApp AI Agent', status: 'active', nodes: 6, trigger: 'Twilio Webhook', desc: 'Receives WhatsApp messages, generates AI reply via Groq, saves to Sheets' },
+    { name: 'Telegram AI Agent', status: 'active', nodes: 6, trigger: 'Twilio Webhook', desc: 'Receives Telegram messages, generates AI reply via Groq, saves to Sheets' },
     { name: 'Dashboard Read API', status: 'active', nodes: 3, trigger: 'GET Webhook', desc: 'Reads Google Sheets data and returns JSON to the dashboard' },
   ];
 
@@ -40,7 +40,7 @@ export default function N8nPage() {
       <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 14, padding: '20px 24px' }}>
         <div style={{ fontFamily: 'Syne', fontSize: 13.5, fontWeight: 600, marginBottom: 16 }}>Architecture</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 0, flexWrap: 'wrap', gap: 8 }}>
-          {['WhatsApp', '→', 'Twilio', '→', 'n8n Agent', '→', 'Groq AI', '→', 'Send Reply', '→', 'Google Sheets', '→', 'Dashboard'].map((item, i) => (
+          {['Telegram', '→', 'Twilio', '→', 'n8n Agent', '→', 'Groq AI', '→', 'Send Reply', '→', 'Google Sheets', '→', 'Dashboard'].map((item, i) => (
             item === '→'
               ? <span key={i} style={{ color: 'var(--text-3)', fontSize: 16 }}>→</span>
               : <span key={i} style={{ fontSize: 12, fontWeight: 500, padding: '5px 12px', background: 'var(--surface-2)', border: '1px solid var(--border)', borderRadius: 8 }}>{item}</span>

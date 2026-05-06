@@ -1,6 +1,6 @@
 # N8N.Meander.One
 
-WhatsApp AI agent that replies to customer messages automatically, logs every conversation to Google Sheets, and provides a real-time admin dashboard.
+Telegram AI agent that replies to customer messages automatically, logs every conversation to Google Sheets, and provides a real-time admin dashboard.
 
 ---
 
@@ -14,7 +14,7 @@ WhatsApp AI agent that replies to customer messages automatically, logs every co
 
 **Automation**
 - n8n (workflow automation)
-- Twilio (WhatsApp API)
+- Twilio (Telegram API)
 - Groq — llama3-8b-8192
 
 **Storage**
@@ -29,7 +29,7 @@ WhatsApp AI agent that replies to customer messages automatically, logs every co
 
 - Node.js v18 or above
 - An n8n instance (cloud or self-hosted)
-- Twilio account with WhatsApp enabled
+- Twilio account with Telegram enabled
 - Google Sheets with correct column headers
 
 ---
@@ -113,12 +113,12 @@ public/
 
 Two workflows are needed — both must be **Active**.
 
-### Workflow 1 — WhatsApp Agent
+### Workflow 1 — Telegram Agent
 
 ```
 Twilio webhook → Prepare data → AI Agent (Groq)
                                       ↓
-                          Send WhatsApp reply → Google Sheets
+                          Send Telegram reply → Google Sheets
 ```
 
 ### Workflow 2 — Dashboard API

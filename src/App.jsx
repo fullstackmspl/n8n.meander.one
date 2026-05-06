@@ -59,7 +59,7 @@ function UserPortal() {
           </div>
           <div style={{ background: 'white', border: '1px solid #e8e8e4', borderRadius: 12, padding: '20px' }}>
             <div style={{ fontSize: 22, marginBottom: 8 }}>💬</div>
-            <div style={{ fontSize: 13.5, fontWeight: 500, color: '#0c0c0b', marginBottom: 4 }}>WhatsApp Bot</div>
+            <div style={{ fontSize: 13.5, fontWeight: 500, color: '#0c0c0b', marginBottom: 4 }}>Telegram Bot</div>
             <div style={{ fontSize: 12.5, color: '#8a8a82', lineHeight: 1.6 }}>The AI agent is active and responding to customers.</div>
           </div>
         </div>

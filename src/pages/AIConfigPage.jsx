@@ -62,7 +62,7 @@ export default function AIConfigPage() {
           </Row>
 
           <Row label="Trigger" sub="Webhook source">
-            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)' }}>Twilio WhatsApp</div>
+            <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-2)' }}>Twilio Telegram</div>
           </Row>
 
           <Row label="Sheets sync" sub="Conversation log destination">
